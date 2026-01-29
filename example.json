@@ -1,0 +1,435 @@
+{
+  "handle": "iccceee",
+  "profile": {
+    "contribution": 0,
+    "lastOnlineTimeSeconds": 1769359944,
+    "rating": 448,
+    "friendOfCount": 0,
+    "titlePhoto": "https://userpic.codeforces.org/no-title.jpg",
+    "rank": "newbie",
+    "handle": "iccceee",
+    "maxRating": 448,
+    "avatar": "https://userpic.codeforces.org/no-avatar.jpg",
+    "registrationTimeSeconds": 1768227803,
+    "maxRank": "newbie"
+  },
+  "rating_history": [
+    {
+      "contestId": 2193,
+      "contestName": "Codeforces Round 1076 (Div. 3)",
+      "handle": "iccceee",
+      "rank": 10191,
+      "ratingUpdateTimeSeconds": 1769359800,
+      "oldRating": 0,
+      "newRating": 448
+    }
+  ],
+  "submissions": [
+    {
+      "id": 359834985,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769355976,
+      "relativeTimeSeconds": 4276,
+      "problem": {
+        "contestId": 2193,
+        "index": "C",
+        "name": "Replace and Sum",
+        "type": "PROGRAMMING",
+        "tags": [
+          "data structures",
+          "greedy"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "C++20 (GCC 13-64)",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 11,
+      "timeConsumedMillis": 156,
+      "memoryConsumedBytes": 921600
+    },
+    {
+      "id": 359829728,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769355649,
+      "relativeTimeSeconds": 3949,
+      "problem": {
+        "contestId": 2193,
+        "index": "D",
+        "name": "Monster Game",
+        "type": "PROGRAMMING",
+        "tags": [
+          "binary search",
+          "sortings",
+          "two pointers"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "C++20 (GCC 13-64)",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 15,
+      "timeConsumedMillis": 109,
+      "memoryConsumedBytes": 4300800
+    },
+    {
+      "id": 359824347,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769355342,
+      "relativeTimeSeconds": 3642,
+      "problem": {
+        "contestId": 2193,
+        "index": "C",
+        "name": "Replace and Sum",
+        "type": "PROGRAMMING",
+        "tags": [
+          "data structures",
+          "greedy"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "C++20 (GCC 13-64)",
+      "verdict": "COMPILATION_ERROR",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 0,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 359821524,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769355193,
+      "relativeTimeSeconds": 3493,
+      "problem": {
+        "contestId": 2193,
+        "index": "B",
+        "name": "Reverse a Permutation",
+        "type": "PROGRAMMING",
+        "tags": [
+          "greedy"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "C++20 (GCC 13-64)",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 9,
+      "timeConsumedMillis": 62,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 359819772,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769355099,
+      "relativeTimeSeconds": 3399,
+      "problem": {
+        "contestId": 2193,
+        "index": "A",
+        "name": "DBMB and the Array",
+        "type": "PROGRAMMING",
+        "tags": [
+          "brute force",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "C++20 (GCC 13-64)",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 6,
+      "timeConsumedMillis": 46,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 359817018,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769354953,
+      "relativeTimeSeconds": 3253,
+      "problem": {
+        "contestId": 2193,
+        "index": "C",
+        "name": "Replace and Sum",
+        "type": "PROGRAMMING",
+        "tags": [
+          "data structures",
+          "greedy"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "C++20 (GCC 13-64)",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 31,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 359812631,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769354722,
+      "relativeTimeSeconds": 3022,
+      "problem": {
+        "contestId": 2193,
+        "index": "B",
+        "name": "Reverse a Permutation",
+        "type": "PROGRAMMING",
+        "tags": [
+          "greedy"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "C++20 (GCC 13-64)",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 1,
+      "timeConsumedMillis": 78,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 359807488,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769354468,
+      "relativeTimeSeconds": 2768,
+      "problem": {
+        "contestId": 2193,
+        "index": "A",
+        "name": "DBMB and the Array",
+        "type": "PROGRAMMING",
+        "tags": [
+          "brute force",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "C++20 (GCC 13-64)",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 15,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 359794075,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769353856,
+      "relativeTimeSeconds": 2156,
+      "problem": {
+        "contestId": 2193,
+        "index": "B",
+        "name": "Reverse a Permutation",
+        "type": "PROGRAMMING",
+        "tags": [
+          "greedy"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "GNU C11",
+      "verdict": "COMPILATION_ERROR",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 0,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 359787267,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769353567,
+      "relativeTimeSeconds": 1867,
+      "problem": {
+        "contestId": 2193,
+        "index": "A",
+        "name": "DBMB and the Array",
+        "type": "PROGRAMMING",
+        "tags": [
+          "brute force",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "GNU C11",
+      "verdict": "COMPILATION_ERROR",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 0,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 359776846,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769353151,
+      "relativeTimeSeconds": 1451,
+      "problem": {
+        "contestId": 2193,
+        "index": "A",
+        "name": "DBMB and the Array",
+        "type": "PROGRAMMING",
+        "tags": [
+          "brute force",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "GNU C11",
+      "verdict": "COMPILATION_ERROR",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 0,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 359755072,
+      "contestId": 2193,
+      "creationTimeSeconds": 1769352394,
+      "relativeTimeSeconds": 694,
+      "problem": {
+        "contestId": 2193,
+        "index": "A",
+        "name": "DBMB and the Array",
+        "type": "PROGRAMMING",
+        "tags": [
+          "brute force",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 2193,
+        "participantId": 229409812,
+        "members": [
+          {
+            "handle": "iccceee"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1769351700
+      },
+      "programmingLanguage": "GNU C11",
+      "verdict": "COMPILATION_ERROR",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 0,
+      "memoryConsumedBytes": 0
+    }
+  ]
+}
