@@ -6,10 +6,11 @@ import os
 from tqdm import tqdm
 
 BASE = "https://codeforces.com/api"
-SLEEP = 1.2
+SLEEP = 1.5
 
-USERS_PER_BUCKET = 50
+USERS_PER_BUCKET = 500
 OUTFILE = "codeforces_dataset.jsonl"
+RATED_USERS_CACHE = "rated_users.json"
 
 
 def cf(endpoint, params=None):
@@ -34,9 +35,20 @@ if os.path.exists(OUTFILE):
 
 print("Already downloaded:", len(done))
 
-print("Fetching rated user list...")
-users = cf("/user.ratedList", {"activeOnly": "true"})
 
+# Rated users cache
+if os.path.exists(RATED_USERS_CACHE):
+    print("Loading rated users from cache...")
+    with open(RATED_USERS_CACHE, "r", encoding="utf8") as f:
+        users = json.load(f)
+else:
+    print("Fetching rated user list from Codeforces...")
+    users = cf("/user.ratedList", {"activeOnly": "true"})
+    with open(RATED_USERS_CACHE, "w", encoding="utf8") as f:
+        json.dump(users, f)
+    print("Saved rated users to cache.")
+
+# Bucketing 
 buckets = {
     "newbie": [],
     "pupil": [],
@@ -58,6 +70,12 @@ for u in users:
     else:
         buckets["master+"].append(u["handle"])
 
+print("\nBucket sizes:")
+for k in buckets:
+    print(k, len(buckets[k]))
+
+# Sampling
+
 selected = []
 
 for k in buckets:
@@ -69,7 +87,7 @@ for k in buckets:
 # Remove already downloaded
 selected = [h for h in selected if h not in done]
 
-print("Remaining users:", len(selected))
+print("\nRemaining users:", len(selected))
 
 with open(OUTFILE, "a", encoding="utf8") as f:
     for handle in tqdm(selected):
@@ -91,4 +109,4 @@ with open(OUTFILE, "a", encoding="utf8") as f:
         except Exception as e:
             print("Failed:", handle, e)
 
-print("Done.")
+print("\nDone.")
