@@ -1,9 +1,31 @@
-# Codeforces Rating Growth Prediction Dataset
+# Competitive Programming Growth Reliability Modeling
 
-This repository contains a machine-learning ready dataset constructed from public Codeforces user data.  
-The goal of this project is to model and predict short-term rating changes based on recent user behavior.
+This project builds a behavioral machine learning dataset from public Codeforces data to estimate the *sustainability and reliability* of a user’s improvement strategy.
 
-Each row in the dataset represents a single user over a fixed time window, with aggregated behavioral features extracted from submissions and contest participation.
+Rather than directly framing the task as rating prediction, the model learns a **Growth Reliability Score** — a proxy for how stable and effective a user’s learning patterns are — derived from recent contest participation, practice behavior, and topic progression.
+
+Under the hood, the target variable is the user’s rating change over the following 30 days.
+
+---
+
+## Overview
+
+Competitive programming improvement is not purely a function of raw activity.  
+It depends on:
+
+- Consistency
+- Recovery from failure
+- Difficulty progression
+- Topic mastery
+- Post-contest learning behavior
+
+This project attempts to quantify these behaviors using temporal feature engineering and supervised learning.
+
+Each sample represents:
+
+> User behavior over 90 days → Rating change over the next 30 days
+
+Sliding windows are used so each user contributes multiple samples.
 
 ---
 
@@ -15,12 +37,14 @@ Raw scraped data (not included in this repository).
 
 Each line corresponds to one Codeforces user and contains:
 
-- `handle`: Username
-- `profile`: Static profile information (rating, maxRating, registration time, etc.)
-- `rating_history`: List of rated contest participations
-- `submissions`: List of all submissions (practice + contest)
+- `handle`
+- `profile`
+- `rating_history`
+- `submissions`
 
-⚠️ **Note:** This raw JSONL file is excluded via `.gitignore` due to its size and because it can be regenerated using the provided scraping scripts.
+This file preserves the full event history.
+
+⚠️ **Note:** This file is excluded via `.gitignore` due to size and can be regenerated using the provided scraping scripts.
 
 ---
 
@@ -28,9 +52,9 @@ Each line corresponds to one Codeforces user and contains:
 
 Processed machine-learning dataset.
 
-Each row represents:
+Each row represents a single temporal window:
 
-> User behavior over 90 days → Rating change over the following 30 days
+> 90-day behavioral features → next 30-day rating delta
 
 This is the main dataset used for modeling and is included in the repository.
 
@@ -40,43 +64,59 @@ This is the main dataset used for modeling and is included in the repository.
 
 | Column | Description |
 |--------|-------------|
-| `handle` | Codeforces username (identifier only, not used for training) |
-| `subs_90d` | Total number of submissions in the 90-day feature window |
-| `ac_ratio` | Fraction of submissions that were Accepted (OK) |
-| `avg_problem_rating` | Average difficulty rating of attempted problems |
-| `tag_entropy` | Entropy of problem tags, measuring topic diversity |
-| `attempts_per_ac` | Average number of attempts per problem |
-| `contest_count` | Number of rated contests participated in |
-| `rating_delta_90d` | Rating change during the 90-day feature window |
-| `max_gap_days` | Largest gap (in days) between active submission days |
-| `future_rating_delta_30d` | Rating change in the next 30 days (target variable) |
+| `handle` | User identifier (not used for training) |
+| `subs_90d` | Total submissions in feature window |
+| `ac_ratio` | Fraction of accepted submissions |
+| `avg_problem_rating` | Average difficulty of attempted problems |
+| `tag_entropy` | Topic diversity (entropy over problem tags) |
+| `attempts_per_ac` | Average attempts per problem |
+| `contest_count` | Rated contests participated in |
+| `rating_delta_90d` | Rating change during feature window |
+| `max_gap_days` | Longest inactivity gap |
+| `higher_difficulty_ac` | Count of accepted problems harder than current rating |
+| `avg_recovery_minutes` | Average time to resubmit after failure |
+| `submission_density` | Submissions per active day |
+| `rating_gap_variance` | Variance in difficulty of attempted problems |
+| `avg_tag_improvement` | Average improvement in tag-specific success rate |
+| `future_rating_delta_30d` | Rating change in next 30 days (target) |
 
 ---
 
 ## Feature Categories
 
-### Activity
+### Activity & Consistency
 - `subs_90d`
 - `contest_count`
 - `max_gap_days`
+- `submission_density`
 
-Measure how frequently and consistently a user practices.
+Measure engagement and regularity.
 
 ---
 
-### Skill / Difficulty
-- `ac_ratio`
+### Skill & Difficulty Progression
 - `avg_problem_rating`
+- `higher_difficulty_ac`
+- `rating_gap_variance`
 
-Estimate problem-solving efficiency and difficulty level.
+Capture difficulty stretching and comfort-zone behavior.
 
 ---
 
-### Learning Pattern
-- `tag_entropy`
+### Learning Efficiency
+- `ac_ratio`
 - `attempts_per_ac`
+- `avg_recovery_minutes`
 
-Capture topic diversity and learning efficiency.
+Model how users respond to failure.
+
+---
+
+### Topic Mastery
+- `tag_entropy`
+- `avg_tag_improvement`
+
+Measure breadth and improvement across problem domains.
 
 ---
 
@@ -91,21 +131,19 @@ Represents recent rating trajectory.
 
 - `future_rating_delta_30d`
 
-This is the supervised learning target: future rating change.
+Supervised learning target representing short-term rating change.
 
 ---
 
 ## Dataset Construction
 
-The dataset is generated using sliding temporal windows:
-
 - Feature window: 90 days  
 - Label window: next 30 days  
-- Step size: 30 days  
+- Sliding step: 30 days  
 
-This allows each user to contribute multiple samples, preserving temporal dynamics and increasing dataset size.
+Raw submission and contest histories are streamed line-by-line to avoid memory overload.
 
-Raw Codeforces API data is aggregated into fixed-length numerical feature vectors suitable for supervised machine learning.
+All features are aggregated from event-level data into fixed-length numeric vectors suitable for classical machine learning models.
 
 ---
 
@@ -115,20 +153,22 @@ The dataset is designed for:
 
 - Regression (predicting future rating delta)
 - Classification (growth / stagnation / decline)
-- Feature importance analysis
-- Behavioral modeling of competitive programming progress
+- Clustering (identifying successful learning patterns)
+- Behavioral modeling of competitive programming strategies
+
+The output may be interpreted as a **Growth Reliability Score** reflecting how sustainable a user’s current approach is.
 
 ---
 
 ## Notes
 
-- All data is collected from the public Codeforces API.
+- All data comes from the public Codeforces API.
 - No private information is included.
-- Ratings are inherently noisy due to real-world factors such as inactivity or burnout.
-- The raw JSONL file can be regenerated using the scraping scripts in this repository.
+- Rating trajectories are inherently noisy due to real-world factors (burnout, inactivity, etc.).
+- Raw JSONL data can be regenerated using the scraping scripts.
 
 ---
 
 ## License
 
-This dataset is for educational and research purposes only.
+Educational and research use only.
