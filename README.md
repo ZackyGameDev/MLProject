@@ -1,10 +1,10 @@
 # Competitive Programming Growth Reliability Modeling
 
-This project builds a behavioral machine learning dataset from public Codeforces data to estimate the *sustainability and reliability* of a user’s improvement strategy.
+This project builds a behavioral machine learning dataset from public Codeforces data to estimate the *sustainability and reliability* of a user's improvement strategy.
 
-Rather than directly framing the task as rating prediction, the model learns a **Growth Reliability Score** — a proxy for how stable and effective a user’s learning patterns are — derived from recent contest participation, practice behavior, and topic progression.
+Rather than directly framing the task as rating prediction, the model learns a **Growth Reliability Score** — a proxy for how stable and effective a user's learning patterns are — derived from recent contest participation, practice behavior, and topic progression.
 
-Under the hood, the target variable is the user’s rating change over the following 30 days.
+Under the hood, the target variable is the user's rating change over the following 30 days.
 
 ---
 
@@ -13,10 +13,10 @@ Under the hood, the target variable is the user’s rating change over the follo
 Competitive programming improvement is not purely a function of raw activity.  
 It depends on:
 
-- Consistency
-- Recovery from failure
-- Difficulty progression
-- Topic mastery
+- Upsolving behavior
+- Consistency & practice regularity
+- Cognitive ability / problem-solving speed
+- Topic diversity & exploration
 - Post-contest learning behavior
 
 This project attempts to quantify these behaviors using temporal feature engineering and supervised learning.
@@ -62,76 +62,70 @@ This is the main dataset used for modeling and is included in the repository.
 
 ## Feature Description (`cf_ml_dataset.csv`)
 
+### Upsolving (4 features)
+
 | Column | Description |
 |--------|-------------|
-| `handle` | User identifier (not used for training) |
+| `upsolve_count` | Number of accepted practice submissions on contest problems |
+| `upsolve_ratio` | Fraction of contest problems later revisited via practice |
+| `upsolve_difficulty_delta` | Avg rating of upsolved problems minus user's current rating |
+| `contest_to_practice_ratio` | Ratio of practice submissions to contest submissions |
+
+### Consistency (8 features)
+
+| Column | Description |
+|--------|-------------|
 | `subs_90d` | Total submissions in feature window |
 | `ac_ratio` | Fraction of accepted submissions |
-| `avg_problem_rating` | Average difficulty of attempted problems |
-| `tag_entropy` | Topic diversity (entropy over problem tags) |
-| `attempts_per_ac` | Average attempts per problem |
-| `contest_count` | Rated contests participated in |
-| `rating_delta_90d` | Rating change during feature window |
-| `max_gap_days` | Longest inactivity gap |
-| `higher_difficulty_ac` | Count of accepted problems harder than current rating |
-| `avg_recovery_minutes` | Average time to resubmit after failure |
-| `submission_density` | Submissions per active day |
-| `rating_gap_variance` | Variance in difficulty of attempted problems |
-| `avg_tag_improvement` | Average improvement in tag-specific success rate |
-| `future_rating_delta_30d` | Rating change in next 30 days (target) |
+| `active_days` | Number of distinct days with ≥1 submission |
+| `avg_gap_days` | Average gap (in days) between active days |
+| `max_gap_days` | Longest inactivity gap (days) |
+| `weekly_consistency` | Std deviation of weekly submission counts (lower = more consistent) |
+| `streak_max` | Longest consecutive-day submission streak |
+| `speed_vs_growth_ratio` | Ratio of submissions on familiar tags to new tags |
 
----
+### IQ / Cognitive Ability (8 features)
 
-## Feature Categories
+| Column | Description |
+|--------|-------------|
+| `base_rating` | Rating at the start of the feature window |
+| `rating_delta_90d` | Rating change during the feature window |
+| `rating_volatility` | Std deviation of per-contest rating changes |
+| `rating_trend_slope` | Linear regression slope of rating over time (rating/day) |
+| `contest_rank_percentile_avg` | Average rank across contests in the window |
+| `solve_speed_avg` | Average time (minutes) to solve contest problems |
+| `difficulty_ceiling` | Maximum problem rating successfully solved |
+| `problem_rating_vs_user_rating` | Avg attempted problem rating / user rating |
 
-### Activity & Consistency
-- `subs_90d`
-- `contest_count`
-- `max_gap_days`
-- `submission_density`
+### Topic Diversity (4 features)
 
-Measure engagement and regularity.
+| Column | Description |
+|--------|-------------|
+| `tag_entropy` | Shannon entropy over problem tags |
+| `unique_tags_count` | Number of distinct tags encountered |
+| `new_tags_explored` | Tags attempted for the first time in this window |
+| `tag_concentration_top3` | Fraction of submissions in top-3 most common tags |
 
----
+### Learning Efficiency (3 features)
 
-### Skill & Difficulty Progression
-- `avg_problem_rating`
-- `higher_difficulty_ac`
-- `rating_gap_variance`
+| Column | Description |
+|--------|-------------|
+| `attempts_per_ac` | Average attempts per unique problem |
+| `first_attempt_ac_rate` | Fraction of problems solved on the first try |
+| `avg_debug_time` | Avg time (minutes) from first WA to final AC per problem |
 
-Capture difficulty stretching and comfort-zone behavior.
+### Contest Behavior (2 features)
 
----
-
-### Learning Efficiency
-- `ac_ratio`
-- `attempts_per_ac`
-- `avg_recovery_minutes`
-
-Model how users respond to failure.
-
----
-
-### Topic Mastery
-- `tag_entropy`
-- `avg_tag_improvement`
-
-Measure breadth and improvement across problem domains.
-
----
-
-### Momentum
-- `rating_delta_90d`
-
-Represents recent rating trajectory.
-
----
+| Column | Description |
+|--------|-------------|
+| `contest_count` | Number of rated contests participated in |
+| `contest_problems_solved_avg` | Average problems solved per contest |
 
 ### Target
 
-- `future_rating_delta_30d`
-
-Supervised learning target representing short-term rating change.
+| Column | Description |
+|--------|-------------|
+| `future_rating_delta_30d` | Rating change in the next 30 days |
 
 ---
 
@@ -156,7 +150,7 @@ The dataset is designed for:
 - Clustering (identifying successful learning patterns)
 - Behavioral modeling of competitive programming strategies
 
-The output may be interpreted as a **Growth Reliability Score** reflecting how sustainable a user’s current approach is.
+The output may be interpreted as a **Growth Reliability Score** reflecting how sustainable a user's current approach is.
 
 ---
 

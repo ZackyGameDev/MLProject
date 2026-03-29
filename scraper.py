@@ -8,7 +8,7 @@ from tqdm import tqdm
 BASE = "https://codeforces.com/api"
 SLEEP = 1.5
 
-USERS_PER_BUCKET = 500
+USERS_PER_BUCKET = 10
 OUTFILE = "codeforces_dataset.jsonl"
 RATED_USERS_CACHE = "rated_users.json"
 
