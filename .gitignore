@@ -260,3 +260,8 @@ __marimo__/
 /Scripts
 pyvenv.cfg
 *.jsonl
+
+
+*.png
+*.jpg
+*.jpeg

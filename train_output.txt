@@ -1,0 +1,54 @@
+﻿Loading dataset...
+  Samples: 37549  |  Features: 29  |  Unique users: 2136
+
+Running 5-fold GroupKFold cross-validation...
+=================================================================
+
+  Ridge
+    RMSE : 129.15 ▒ 3.84
+    MAE  : 90.51 ▒ 1.91
+    R2   : 0.3523 ▒ 0.0090
+    Time : 0.2s
+
+  SVR (RBF)
+    RMSE : 121.70 ▒ 3.71
+    MAE  : 82.66 ▒ 1.70
+    R2   : 0.4249 ▒ 0.0089
+    Time : 341.6s
+
+  Random Forest
+    RMSE : 115.04 ▒ 2.39
+    MAE  : 81.74 ▒ 1.46
+    R2   : 0.4857 ▒ 0.0162
+    Time : 37.6s
+
+  XGBoost
+    RMSE : 115.66 ▒ 2.53
+    MAE  : 81.99 ▒ 1.64
+    R2   : 0.4801 ▒ 0.0165
+    Time : 7.0s
+
+=================================================================
+
+[RESULTS] Model Comparison Summary
+-----------------------------------------------------------------
+  Model                      RMSE        MAE         R2     Time
+-----------------------------------------------------------------
+  Ridge                    129.15      90.51     0.3523     0.2s
+  SVR (RBF)                121.70      82.66     0.4249   341.6s
+  Random Forest            115.04      81.74     0.4857    37.6s
+  XGBoost                  115.66      81.99     0.4801     7.0s
+-----------------------------------------------------------------
+  >>> Best model: Random Forest
+
+Retraining all models on full dataset and saving...
+  [OK] Saved models/ridge.joblib
+  [OK] Saved models/svr_rbf.joblib
+  [OK] Saved models/random_forest.joblib
+  [OK] Saved models/xgboost.joblib
+
+[OK] Saved model_comparison.png
+[OK] Saved feature_importance.png
+[OK] Saved predicted_vs_actual.png
+
+Done! Check the generated plots.
