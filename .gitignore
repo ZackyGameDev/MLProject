@@ -262,6 +262,8 @@ pyvenv.cfg
 *.jsonl
 
 
-*.png
-*.jpg
-*.jpeg
+# *.png
+# *.jpg
+# *.jpeg
+
+playground.py

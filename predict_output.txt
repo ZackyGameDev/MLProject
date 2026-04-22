@@ -1,0 +1,66 @@
+﻿
+Fetching data for 'tourist' from Codeforces API...
+  Current rating: 3755  |  Max: 4009  |  Rank: legendary grandmaster
+  Contests: 300  |  Submissions: 5418
+
+Computing features...
+Loading models...
+
+============================================================
+FEATURE SUMMARY
+============================================================
+
+  [Upsolving]
+                          upsolve_count: 3
+                          upsolve_ratio: 0.5000
+               upsolve_difficulty_delta: -455.0000
+              contest_to_practice_ratio: 0.0870
+
+  [Consistency]
+                               subs_90d: 75
+                               ac_ratio: 0.7333
+                            active_days: 9
+                           avg_gap_days: 10.0000
+                           max_gap_days: 20.0000
+                     weekly_consistency: 5.0408
+                             streak_max: 2
+                  speed_vs_growth_ratio: 271.0000
+
+  [Cognitive]
+                            base_rating: 3583
+                       rating_delta_90d: 172
+                      rating_volatility: 64.3048
+                     rating_trend_slope: 3.8622
+            contest_rank_percentile_avg: 6.0000
+                        solve_speed_avg: 43.0484
+                     difficulty_ceiling: 3500
+          problem_rating_vs_user_rating: 0.6194
+
+  [Diversity]
+                            tag_entropy: 4.3793
+                      unique_tags_count: 30
+                      new_tags_explored: 0
+                 tag_concentration_top3: 0.3210
+
+  [Efficiency]
+                        attempts_per_ac: 1.2931
+                  first_attempt_ac_rate: 0.7586
+                         avg_debug_time: 15.4778
+
+  [Contest]
+                          contest_count: 7
+            contest_problems_solved_avg: 7.4286
+
+============================================================
+PREDICTIONS (rating change over next 30 days)
+============================================================
+  Ridge               :   -183.6 rating points
+  SVR (RBF)           :    -42.2 rating points
+  Random Forest       :    -44.0 rating points
+  XGBoost             :    -56.9 rating points
+
+  Ensemble avg        :    -81.7 rating points
+
+------------------------------------------------------------
+  Outlook: DECLINE -- This user's behavior suggests regression
+------------------------------------------------------------

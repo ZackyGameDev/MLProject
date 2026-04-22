@@ -1,22 +1,20 @@
 """
-Predict future rating change for a Codeforces user.
-====================================================
+Test model predictions against actual historical data for a Codeforces user.
+=============================================================================
 Usage:
-    python predict.py <handle>
-    python predict.py <handle> --outputmodel xgboost
-    python predict.py tourist
-    python predict.py        (prompts for handle)
+    python testpredict.py <handle>
+    python testpredict.py tourist
+    python testpredict.py        (prompts for handle)
 
-Fetches the user's data from the Codeforces API, computes the same
-29 features used during training (from the most recent 90-day window),
-and runs all 4 saved models to predict rating change over the next 30 days.
+This script works like predict.py, but instead of predicting the unknown future,
+it uses the most recent 30-day period with contests as the "test" label window,
+and the 90 days before that as the "feature" input window.
 
-The optional --outputmodel flag selects which model's prediction to use
-as the primary output. Valid choices: ridge, svr, random_forest, xgboost, ensemble.
+It then compares the model's predicted rating change over those 30 days 
+against the user's ACTUAL rating change during that same 30-day period.
 """
 
 import sys
-import argparse
 import requests
 import time
 import numpy as np
@@ -27,6 +25,7 @@ from math import log2
 # ─── Config ───────────────────────────────────────────────────────────
 DAY = 86400
 FEATURE_DAYS = 90
+LABEL_DAYS = 30
 FAMILIAR_TAG_THRESHOLD = 5
 BASE = "https://codeforces.com/api"
 SLEEP = 1.5
@@ -44,7 +43,7 @@ def cf(endpoint, params=None):
     return data["result"]
 
 
-# ─── Feature utility functions (same as cleaner.py) ──────────────────
+# ─── Feature utility functions ───────────────────────────────────────
 
 def entropy(tags):
     if not tags:
@@ -90,10 +89,10 @@ def weekly_submission_std(sub_times, f_start, f_end):
 
 # ─── Feature extraction ─────────────────────────────────────────────
 
-def extract_features(subs, contests):
+def extract_features_and_label(subs, contests):
     """
-    Extract the 29 features from the most recent 90-day window
-    that has contest activity.
+    Extract the 29 features from a 90-day window and the actual rating 
+    change from the subsequent 30-day window.
     """
     if len(contests) < 2:
         raise ValueError("User has fewer than 2 rated contests. Not enough data.")
@@ -101,22 +100,33 @@ def extract_features(subs, contests):
     subs_sorted = sorted(subs, key=lambda s: s["creationTimeSeconds"])
     contest_times = [c["ratingUpdateTimeSeconds"] for c in contests]
 
-    # Use the most recent 90-day window ending at the last contest
-    f_end = int(time.time())  # now
+    now = int(time.time())
+    label_start = now - LABEL_DAYS * DAY
+    label_end = now
+    
+    label_contests = [c for c in contests if label_start <= c["ratingUpdateTimeSeconds"] <= label_end]
+    
+    if not label_contests:
+        print("\n[!] User had no rated contests in the strict last 30 days.")
+        print("[!] Finding the most recent 30-day period where they actually competed...")
+        last_contest_time = contest_times[-1]
+        label_end = last_contest_time + 1 # just to be inclusive
+        label_start = label_end - LABEL_DAYS * DAY
+        label_contests = [c for c in contests if label_start <= c["ratingUpdateTimeSeconds"] <= label_end]
+        
+        if not label_contests:
+            raise ValueError("Could not find a valid 30-day label window.")
+
+    actual_delta = label_contests[-1]["newRating"] - label_contests[0]["oldRating"]
+    
+    f_end = label_start
     f_start = f_end - FEATURE_DAYS * DAY
 
     window_subs = [s for s in subs if f_start <= s["creationTimeSeconds"] < f_end]
     window_contests = [c for c in contests if f_start <= c["ratingUpdateTimeSeconds"] < f_end]
 
-    # If no activity in last 90 days, try the window ending at the last contest
-    if not window_subs and not window_contests:
-        f_end = max(contest_times)
-        f_start = f_end - FEATURE_DAYS * DAY
-        window_subs = [s for s in subs if f_start <= s["creationTimeSeconds"] < f_end]
-        window_contests = [c for c in contests if f_start <= c["ratingUpdateTimeSeconds"] < f_end]
-
     if not window_subs:
-        raise ValueError("No submissions found in the feature window.")
+        raise ValueError(f"No submissions found in the 90-day feature window ({time.strftime('%Y-%m-%d', time.gmtime(f_start))} to {time.strftime('%Y-%m-%d', time.gmtime(f_end))}).")
 
     # ── Base rating ──
     past_contests = [c for c in contests if c["ratingUpdateTimeSeconds"] < f_start]
@@ -278,8 +288,7 @@ def extract_features(subs, contests):
     else:
         contest_problems_solved_avg = 0.0
 
-    # Return as dict
-    return {
+    features = {
         "upsolve_count": upsolve_count,
         "upsolve_ratio": upsolve_ratio,
         "upsolve_difficulty_delta": upsolve_difficulty_delta,
@@ -311,37 +320,21 @@ def extract_features(subs, contests):
         "contest_problems_solved_avg": contest_problems_solved_avg,
     }
 
-
-# ─── Model name mapping ──────────────────────────────────────────────
-MODEL_KEY_MAP = {
-    "ridge": "Ridge",
-    "svr": "SVR (RBF)",
-    "random_forest": "Random Forest",
-    "xgboost": "XGBoost",
-    "ensemble": "Ensemble",
-}
-
-VALID_MODELS = list(MODEL_KEY_MAP.keys())
+    return features, actual_delta, f_start, f_end, label_start, label_end
 
 
 # ─── Main ─────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="Predict Codeforces rating change.")
-    parser.add_argument("handle", nargs="?", default=None, help="Codeforces handle")
-    parser.add_argument("--outputmodel", choices=VALID_MODELS, default=None,
-                        help="Which model to use as the primary prediction (ridge, svr, random_forest, xgboost, ensemble)")
-    args = parser.parse_args()
-
-    handle = args.handle
-    if not handle:
+    # Get handle
+    if len(sys.argv) > 1:
+        handle = sys.argv[1]
+    else:
         handle = input("Enter Codeforces handle: ").strip()
 
     if not handle:
         print("No handle provided.")
         return
-
-    output_model = args.outputmodel
 
     print(f"\nFetching data for '{handle}' from Codeforces API...")
 
@@ -363,13 +356,17 @@ def main():
     # Extract features
     print("\nComputing features...")
     try:
-        features = extract_features(submissions, rating_history)
+        features, actual_delta, f_start, f_end, l_start, l_end = extract_features_and_label(submissions, rating_history)
     except ValueError as e:
         print(f"Error: {e}")
         return
 
+    print(f"\n[TIMELINE]")
+    print(f"  Feature window (90 days): {time.strftime('%Y-%m-%d', time.gmtime(f_start))} to {time.strftime('%Y-%m-%d', time.gmtime(f_end))}")
+    print(f"  Label window (30 days)  : {time.strftime('%Y-%m-%d', time.gmtime(l_start))} to {time.strftime('%Y-%m-%d', time.gmtime(l_end))}")
+
     # Load models and feature order
-    print("Loading models...")
+    print("\nLoading models...")
     feature_cols = joblib.load("models/feature_columns.joblib")
     scaler = joblib.load("models/scaler.joblib")
 
@@ -401,7 +398,7 @@ def main():
 
     # Run predictions
     print("\n" + "=" * 60)
-    print("PREDICTIONS (rating change over next 30 days)")
+    print("PREDICTIONS vs ACTUAL")
     print("=" * 60)
 
     model_files = {
@@ -411,42 +408,54 @@ def main():
         "XGBoost": ("models/xgboost.joblib", False),
     }
 
+    # Map display names to --outputmodel keys
+    model_key_map = {
+        "Ridge": "ridge",
+        "SVR (RBF)": "svr",
+        "Random Forest": "random_forest",
+        "XGBoost": "xgboost",
+        "Ensemble": "ensemble",
+    }
+
     predictions = {}
+    errors = {}
     for name, (path, needs_scaling) in model_files.items():
         try:
             model = joblib.load(path)
             X_input = scaler.transform(X) if needs_scaling else X
             pred = model.predict(X_input)[0]
             predictions[name] = pred
-            print(f"  {name:<20s}: {pred:>+8.1f} rating points")
+            
+            error = abs(pred - actual_delta)
+            errors[name] = error
+            print(f"  {name:<20s}: Predicted {pred:>+8.1f} | Error: {error:5.1f} points")
         except Exception as e:
             print(f"  {name:<20s}: Error - {e}")
 
     if predictions:
         avg_pred = np.mean(list(predictions.values()))
+        avg_error = abs(avg_pred - actual_delta)
         predictions["Ensemble"] = avg_pred
-        print(f"\n  {'Ensemble avg':<20s}: {avg_pred:>+8.1f} rating points")
-
-        # Determine the primary prediction
-        if output_model:
-            display_name = MODEL_KEY_MAP[output_model]
-            primary_pred = predictions[display_name]
-            print("\n" + "=" * 60)
-            print(f"  PRIMARY PREDICTION (using {display_name}):")
-            print(f"  >>> {primary_pred:>+.1f} rating points over the next 30 days")
-            print("=" * 60)
-        else:
-            primary_pred = avg_pred
-
+        errors["Ensemble"] = avg_error
+        
+        print(f"\n  {'Ensemble avg':<20s}: Predicted {avg_pred:>+8.1f} | Error: {avg_error:5.1f} points")
+        
         print("\n" + "-" * 60)
-        if primary_pred > 50:
-            print("  Outlook: GROWTH -- This user's behavior suggests improvement")
-        elif primary_pred > -50:
-            print("  Outlook: STABLE -- This user's behavior suggests stagnation")
-        else:
-            print("  Outlook: DECLINE -- This user's behavior suggests regression")
+        print(f"  ACTUAL RATING CHANGE: {actual_delta:>+8.1f} rating points")
         print("-" * 60)
 
+        # Find the best model (lowest error)
+        best_model_name = min(errors, key=errors.get)
+        best_key = model_key_map[best_model_name]
+
+        print(f"\n  Best model for {handle}: {best_model_name} (error: {errors[best_model_name]:.1f} points)")
+        print(f"  Now running predict.py with --outputmodel {best_key}...\n")
+
+        # Call predict.py with the best model
+        import subprocess
+        cmd = [sys.executable, "predict.py", handle, "--outputmodel", best_key]
+        subprocess.run(cmd)
 
 if __name__ == "__main__":
     main()
+
