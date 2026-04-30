@@ -6,6 +6,11 @@ Rather than directly framing the task as rating prediction, the model learns a *
 
 Under the hood, the target variable is the user's rating change over the following 30 days.
 
+<h2 align="center">Project Poster</h2>
+<p align="center">
+  <img src="./poster.png" alt="A3 Project Poster" width="600"/>
+</p>
+
 ---
 
 ## Overview
